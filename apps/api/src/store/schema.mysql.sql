@@ -98,7 +98,7 @@ CREATE TABLE IF NOT EXISTS app_user (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Case-insensitive unique on email. The collation handles case folding.
-CREATE UNIQUE INDEX IF NOT EXISTS app_user_email_idx ON app_user (email);
+CREATE UNIQUE INDEX app_user_email_idx ON app_user (email);
 
 CREATE TABLE IF NOT EXISTS user_session (
   token_hash VARCHAR(128) PRIMARY KEY,
@@ -110,8 +110,8 @@ CREATE TABLE IF NOT EXISTS user_session (
   FOREIGN KEY (user_id) REFERENCES app_user(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE INDEX IF NOT EXISTS user_session_user_idx    ON user_session (user_id);
-CREATE INDEX IF NOT EXISTS user_session_expires_idx ON user_session (expires_at);
+CREATE INDEX user_session_user_idx    ON user_session (user_id);
+CREATE INDEX user_session_expires_idx ON user_session (expires_at);
 
 /* ═══ Transactional ═══ */
 
@@ -126,7 +126,7 @@ CREATE TABLE IF NOT EXISTS customer (
   created_at    DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE UNIQUE INDEX IF NOT EXISTS customer_name_idx ON customer (name);
+CREATE UNIQUE INDEX customer_name_idx ON customer (name);
 
 CREATE TABLE IF NOT EXISTS design (
   id                 CHAR(36) PRIMARY KEY,
@@ -165,8 +165,8 @@ CREATE TABLE IF NOT EXISTS design (
   FOREIGN KEY (supersedes) REFERENCES design(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE INDEX IF NOT EXISTS design_status_idx   ON design (status);
-CREATE INDEX IF NOT EXISTS design_customer_idx ON design (customer_id);
+CREATE INDEX design_status_idx   ON design (status);
+CREATE INDEX design_customer_idx ON design (customer_id);
 
 CREATE TABLE IF NOT EXISTS design_option (
   id                CHAR(36) PRIMARY KEY,
@@ -200,7 +200,7 @@ CREATE TABLE IF NOT EXISTS design_option (
   FOREIGN KEY (die_id) REFERENCES die(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE INDEX IF NOT EXISTS design_option_design_idx ON design_option (design_id);
+CREATE INDEX design_option_design_idx ON design_option (design_id);
 
 CREATE TABLE IF NOT EXISTS design_bom (
   id          CHAR(36) PRIMARY KEY,
@@ -213,7 +213,7 @@ CREATE TABLE IF NOT EXISTS design_bom (
   FOREIGN KEY (design_id) REFERENCES design(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE INDEX IF NOT EXISTS design_bom_design_idx ON design_bom (design_id);
+CREATE INDEX design_bom_design_idx ON design_bom (design_id);
 
 /* ═══ Manufacturing results ═══ */
 
@@ -236,7 +236,7 @@ CREATE TABLE IF NOT EXISTS manufactured_result (
   FOREIGN KEY (design_id) REFERENCES design(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE INDEX IF NOT EXISTS manufactured_result_design_idx ON manufactured_result (design_id);
+CREATE INDEX manufactured_result_design_idx ON manufactured_result (design_id);
 
 CREATE TABLE IF NOT EXISTS audit_log (
   id        CHAR(36) PRIMARY KEY,
@@ -249,4 +249,4 @@ CREATE TABLE IF NOT EXISTS audit_log (
   at        DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE INDEX IF NOT EXISTS audit_log_entity_idx ON audit_log (entity_id);
+CREATE INDEX audit_log_entity_idx ON audit_log (entity_id);
