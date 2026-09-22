@@ -1,0 +1,275 @@
+@import 'tailwindcss';
+@import 'flowbite-react/plugin/tailwindcss';
+@source '../.flowbite-react/class-list.json';
+@source "../node_modules/flowbite-react/dist";
+
+/**
+ * flowbite-react components emit `dark:` variants. Bind that variant to our
+ * data-theme attribute so one switch drives both our tokens and their components.
+ */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/**
+ * MELTEK design system (§9).
+ * Premium industrial: one chromatic accent, generous space, hairline rules,
+ * layered surfaces over outlines, tabular figures everywhere.
+ */
+
+:root,
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --bg:          #0b0d10;
+  --surface-1:   #12151a;
+  --surface-2:   #191d24;
+  --surface-3:   #222730;
+  --line:        #262c35;
+  --line-strong: #333b46;
+
+  --text:   #edeff2;
+  --text-2: #98a2af;
+  --text-3: #6b7684;
+
+  --brand:       #ff2d4f;
+  --brand-hover: #ff4a66;
+  --brand-press: #e21938;
+  --brand-wash:  rgba(255, 45, 79, 0.1);
+  --brand-glow:  rgba(255, 45, 79, 0.28);
+  --brand-ink:   #ffffff;
+
+  --ok:          #3fb37f;
+  --warn:        #d9a441;
+  --info:        #5b9bd5;
+  --provisional: #8c7bb8;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 8px 24px -8px rgba(0, 0, 0, 0.6);
+  --shadow-lg: 0 24px 64px -16px rgba(0, 0, 0, 0.7);
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+
+  --bg:          #fafafb;
+  --surface-1:   #ffffff;
+  --surface-2:   #f3f4f6;
+  --surface-3:   #e8eaee;
+  --line:        #e2e5ea;
+  --line-strong: #cbd0d8;
+
+  --text:   #14181d;
+  --text-2: #55606d;
+  --text-3: #828d9a;
+
+  --brand:       #e21938;
+  --brand-hover: #c41430;
+  --brand-press: #a81028;
+  --brand-wash:  rgba(226, 25, 56, 0.07);
+  --brand-glow:  rgba(226, 25, 56, 0.2);
+  --brand-ink:   #ffffff;
+
+  --ok:          #2e8b62;
+  --warn:        #a8791f;
+  --info:        #3a72a8;
+  --provisional: #6b5a99;
+
+  --shadow-sm: 0 1px 2px rgba(16, 20, 28, 0.06);
+  --shadow-md: 0 8px 24px -8px rgba(16, 20, 28, 0.12);
+  --shadow-lg: 0 24px 64px -16px rgba(16, 20, 28, 0.18);
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface-1: var(--surface-1);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-text: var(--text);
+  --color-text-2: var(--text-2);
+  --color-text-3: var(--text-3);
+  --color-brand: var(--brand);
+  --color-brand-hover: var(--brand-hover);
+  --color-brand-press: var(--brand-press);
+  --color-ok: var(--ok);
+  --color-warn: var(--warn);
+  --color-info: var(--info);
+  --color-provisional: var(--provisional);
+
+  --font-display: 'Archivo', system-ui, sans-serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  --radius-sm: 3px;
+  --radius-md: 5px;
+  --radius-lg: 10px;
+}
+
+@layer base {
+  * { border-color: var(--line); }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+    line-height: 1.08;
+    font-weight: 700;
+  }
+
+  /* §9.3 - tabular figures on every numeric cell, without exception. */
+  .num, td.num, th.num, input[type='number'], .mono {
+    font-variant-numeric: tabular-nums;
+  }
+  .mono { font-family: var(--font-mono); }
+
+  ::selection { background: var(--brand-wash); }
+
+  :focus-visible {
+    outline: 2px solid var(--brand);
+    outline-offset: 2px;
+    border-radius: 3px;
+  }
+
+  input, select, textarea, button { font: inherit; color: inherit; }
+
+  /* A hairline scrollbar, in keeping with the rest. */
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb {
+    background: var(--line-strong);
+    border-radius: 999px;
+    border: 3px solid var(--bg);
+  }
+}
+
+@layer components {
+  /*
+   * Cards read as machined panels: a hairline edge, one soft shadow, and a single
+   * top highlight. No heavy borders, no stacked outlines.
+   */
+  .card {
+    background: var(--surface-1);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    box-shadow: var(--shadow-sm), inset 0 1px 0 color-mix(in srgb, var(--text) 4%, transparent);
+  }
+
+  /* The eyebrow above a page title. Small caps, never letterspaced lowercase. */
+  .eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--brand);
+  }
+
+  /* A hairline rule that fades out, used under page headers. */
+  .rule-fade {
+    height: 1px;
+    background: linear-gradient(90deg, var(--line-strong) 0%, var(--line) 40%, transparent 100%);
+  }
+
+  .label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-3);
+    font-weight: 600;
+  }
+
+  /*
+   * Fields are deliberately square-ish. Heavy rounding reads as consumer software;
+   * an instrument has crisp corners, a recessed well and one clear focus state.
+   */
+  .input {
+    width: 100%;
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 5px;
+    padding: 8px 12px;
+    box-shadow: inset 0 1px 2px color-mix(in srgb, #000 12%, transparent);
+    transition: border-color 0.09s ease, box-shadow 0.09s ease, background 0.09s ease;
+  }
+  .input:hover { border-color: var(--line-strong); }
+  .input:focus {
+    border-color: var(--brand);
+    outline: none;
+    box-shadow: 0 0 0 3px var(--brand-glow), inset 0 1px 2px color-mix(in srgb, #000 12%, transparent);
+  }
+  .input[aria-invalid='true'] { border-color: var(--warn); }
+
+  .measure { max-width: 68ch; }
+
+  /*
+   * Gloss. A single soft top highlight and a layered surface, not a plastic sheen:
+   * the light reads as a bevel on a machined panel rather than a web gradient.
+   */
+  .glossy {
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--text) 4%, transparent) 0%, transparent 42%),
+      var(--surface-1);
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow-md), inset 0 1px 0 color-mix(in srgb, var(--text) 7%, transparent);
+  }
+
+  .glossy-rail {
+    background:
+      radial-gradient(120% 60% at 50% -10%, var(--brand-wash) 0%, transparent 60%),
+      linear-gradient(180deg, var(--surface-2) 0%, var(--surface-1) 30%, var(--bg) 100%);
+    box-shadow: inset -1px 0 0 var(--line), inset 0 1px 0 color-mix(in srgb, var(--text) 6%, transparent);
+    backdrop-filter: blur(12px);
+  }
+
+  .glossy-bar {
+    background: color-mix(in srgb, var(--surface-1) 72%, transparent);
+    box-shadow: inset 0 -1px 0 var(--line), inset 0 1px 0 color-mix(in srgb, var(--text) 5%, transparent);
+    backdrop-filter: blur(14px) saturate(1.4);
+  }
+
+  /* The active rail item: a brand wash with a hairline spine, never a filled block. */
+  .rail-active {
+    background: linear-gradient(90deg, var(--brand-wash) 0%, transparent 90%);
+    box-shadow: inset 2px 0 0 var(--brand);
+  }
+
+  /*
+   * Data tables earn their density; nothing else should be dense (§9.1). The header
+   * sticks so the columns stay readable while scanning a long ranking.
+   */
+  .data-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: color-mix(in srgb, var(--surface-1) 94%, transparent);
+    backdrop-filter: blur(8px);
+    box-shadow: inset 0 -1px 0 var(--line-strong);
+  }
+}
+
+@media print {
+  .no-print { display: none !important; }
+  body { background: #fff; color: #000; }
+}
+
+/* §10.3 - under prefers-reduced-motion every transform collapses to opacity. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@keyframes meltek-shimmer {
+  from { background-position: 200% 0; }
+  to   { background-position: -200% 0; }
+}
