@@ -16,6 +16,8 @@ import { defaultSettingRows } from './json-store.js';
 const here = dirname(fileURLToPath(import.meta.url));
 const num = (v: unknown): number => (v === null || v === undefined ? 0 : Number(v));
 const numOrNull = (v: unknown): number | null => (v === null || v === undefined ? null : Number(v));
+const dt = (v: string | null | undefined): string | null =>
+  v ? v.replace('T', ' ').replace('Z', '').replace(/\.\d+$/, '') : null;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Params = any[];
 
@@ -333,7 +335,7 @@ export class MysqlStore implements Store {
     await this.pool.execute(
       `INSERT INTO app_user (id, name, email, password_hash, role, is_active, is_protected, last_sign_in_at)
        VALUES (?,?,?,?,?,?,?,?)`,
-      [u.id, u.name, u.email, u.passwordHash, u.role, u.isActive ? 1 : 0, u.isProtected ? 1 : 0, u.lastSignInAt],
+      [u.id, u.name, u.email, u.passwordHash, u.role, u.isActive ? 1 : 0, u.isProtected ? 1 : 0, dt(u.lastSignInAt)],
     );
     const { passwordHash: _pw, ...user } = u;
     return user;
@@ -344,7 +346,7 @@ export class MysqlStore implements Store {
       `UPDATE app_user SET name = ?, email = ?, password_hash = ?, role = ?,
          is_active = ?, last_sign_in_at = ?, is_protected = ?
        WHERE id = ?`,
-      [u.name, u.email, u.passwordHash, u.role, u.isActive ? 1 : 0, u.lastSignInAt, u.isProtected ? 1 : 0, u.id],
+      [u.name, u.email, u.passwordHash, u.role, u.isActive ? 1 : 0, dt(u.lastSignInAt), u.isProtected ? 1 : 0, u.id],
     );
     const { passwordHash: _pw, ...user } = u;
     return user;
@@ -358,7 +360,7 @@ export class MysqlStore implements Store {
     await this.pool.execute(
       `INSERT INTO user_session (token_hash, user_id, created_at, expires_at, user_agent, ip)
        VALUES (?,?,?,?,?,?)`,
-      [s.tokenHash, s.userId, s.createdAt, s.expiresAt, s.userAgent, s.ip],
+      [s.tokenHash, s.userId, dt(s.createdAt), dt(s.expiresAt), s.userAgent, s.ip],
     );
   }
 
@@ -379,7 +381,7 @@ export class MysqlStore implements Store {
 
   async touchSession(tokenHash: string, expiresAt: string): Promise<void> {
     await this.pool.execute(
-      'UPDATE user_session SET expires_at = ? WHERE token_hash = ?', [expiresAt, tokenHash]);
+      'UPDATE user_session SET expires_at = ? WHERE token_hash = ?', [dt(expiresAt), tokenHash]);
   }
 
   async deleteSession(tokenHash: string): Promise<void> {
@@ -496,7 +498,7 @@ export class MysqlStore implements Store {
         d.inputs.ctType, d.inputs.primaryCurrent, d.inputs.secondaryCurrent, d.inputs.burdenVA,
         d.inputs.accuracyClass, d.inputs.finishedIdMm, d.inputs.finishedOdMm, d.inputs.maxWidthMm,
         d.insulationType, JSON.stringify(d.settingsSnapshot), JSON.stringify(d.referenceSnapshot),
-        d.status, d.selectedOptionId, d.approvedBy, d.approvedAt, d.supersededById, d.id],
+        d.status, d.selectedOptionId, d.approvedBy, dt(d.approvedAt), d.supersededById, d.id],
     );
     return d;
   }
