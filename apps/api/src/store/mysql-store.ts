@@ -34,7 +34,14 @@ export class MysqlStore implements Store {
       .map((s) => s.trim())
       .filter((s) => s.length > 0 && !s.startsWith('--'));
     for (const stmt of statements) {
-      await this.pool.execute(stmt);
+      try {
+        await this.pool.execute(stmt);
+      } catch (err: unknown) {
+        const code = (err as { code?: string }).code;
+        // Ignore "duplicate key/index" errors for idempotent re-runs
+        if (code === 'ER_DUP_KEYNAME' || code === 'ER_DUP_FIELDNAME') continue;
+        throw err;
+      }
     }
     const countRows = await this.query('SELECT COUNT(*) AS n FROM steel_grade');
     if (Number(countRows[0]?.n ?? 0) === 0) await this.seed();

@@ -98,7 +98,7 @@ CREATE TABLE IF NOT EXISTS app_user (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Case-insensitive unique on email. The collation handles case folding.
-CREATE UNIQUE INDEX app_user_email_idx ON app_user (email);
+CREATE UNIQUE INDEX IF NOT EXISTS app_user_email_idx ON app_user (email);
 
 CREATE TABLE IF NOT EXISTS user_session (
   token_hash VARCHAR(128) PRIMARY KEY,
