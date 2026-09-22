@@ -24,7 +24,16 @@ export class MysqlStore implements Store {
   private readonly pool: mysql.Pool;
 
   constructor(connectionString: string) {
-    this.pool = mysql.createPool(connectionString);
+    const url = new URL(connectionString);
+    const ssl = url.searchParams.get('ssl') !== '0' && url.searchParams.get('sslmode') !== 'disable';
+    url.searchParams.delete('ssl');
+    url.searchParams.delete('sslmode');
+    this.pool = mysql.createPool({
+      uri: url.toString(),
+      ...(ssl ? { ssl: { rejectUnauthorized: false } } : {}),
+      waitForConnections: true,
+      connectionLimit: 5,
+    });
   }
 
   async init(): Promise<void> {
