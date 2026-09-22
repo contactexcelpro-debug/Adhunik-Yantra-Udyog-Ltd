@@ -25,9 +25,13 @@ export class MysqlStore implements Store {
 
   constructor(connectionString: string) {
     const url = new URL(connectionString);
-    const ssl = url.searchParams.get('ssl') !== '0' && url.searchParams.get('sslmode') !== 'disable';
-    url.searchParams.delete('ssl');
+    const sslParam = url.searchParams.get('ssl-mode')
+      ?? url.searchParams.get('sslmode')
+      ?? url.searchParams.get('ssl');
+    const ssl = sslParam !== '0' && sslParam?.toLowerCase() !== 'disable' && sslParam?.toLowerCase() !== 'disabled';
+    url.searchParams.delete('ssl-mode');
     url.searchParams.delete('sslmode');
+    url.searchParams.delete('ssl');
     this.pool = mysql.createPool({
       uri: url.toString(),
       ...(ssl ? { ssl: { rejectUnauthorized: false } } : {}),
