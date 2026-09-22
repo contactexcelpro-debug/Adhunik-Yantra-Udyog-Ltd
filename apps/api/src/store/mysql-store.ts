@@ -29,14 +29,16 @@ export class MysqlStore implements Store {
       ?? url.searchParams.get('sslmode')
       ?? url.searchParams.get('ssl');
     const ssl = sslParam !== '0' && sslParam?.toLowerCase() !== 'disable' && sslParam?.toLowerCase() !== 'disabled';
-    url.searchParams.delete('ssl-mode');
-    url.searchParams.delete('sslmode');
-    url.searchParams.delete('ssl');
     this.pool = mysql.createPool({
-      uri: url.toString(),
+      host: url.hostname,
+      port: Number(url.port) || 3306,
+      user: decodeURIComponent(url.username),
+      password: decodeURIComponent(url.password),
+      database: url.pathname.replace(/^\//, ''),
       ...(ssl ? { ssl: { rejectUnauthorized: false } } : {}),
       waitForConnections: true,
       connectionLimit: 5,
+      connectTimeout: 10000,
     });
   }
 
