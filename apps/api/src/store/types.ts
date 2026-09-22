@@ -168,7 +168,7 @@ export interface DesignFilter {
  * PostgreSQL schema in schema.sql (§7).
  */
 export interface Store {
-  readonly kind: 'json' | 'postgres';
+  readonly kind: 'json' | 'postgres' | 'mysql';
   init(): Promise<void>;
   close(): Promise<void>;
 
