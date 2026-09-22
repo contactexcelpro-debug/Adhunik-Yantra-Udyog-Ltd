@@ -41,11 +41,12 @@ export class MysqlStore implements Store {
   }
 
   async init(): Promise<void> {
-    const ddl = await readFile(resolve(here, 'schema.mysql.sql'), 'utf8');
+    const raw = await readFile(resolve(here, 'schema.mysql.sql'), 'utf8');
+    const ddl = raw.replace(/--[^\n]*/g, '').replace(/\/\*[\s\S]*?\*\//g, '');
     const statements = ddl
       .split(';')
       .map((s) => s.trim())
-      .filter((s) => s.length > 0 && !s.startsWith('--'));
+      .filter((s) => s.length > 0);
     for (const stmt of statements) {
       try {
         await this.pool.execute(stmt);
